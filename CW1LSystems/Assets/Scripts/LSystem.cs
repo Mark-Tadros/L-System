@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿// Controls and creates the L-System based on the characters and rules.
+using System.Collections.Generic;
 using UnityEngine;
 using System.Text;
 using System.Collections;
@@ -22,6 +23,7 @@ public class LSystem : MonoBehaviour {
     
     bool drawing = false; public float topPosition; float botPosition;
 
+    // Loops through each iteration as the user continues to press Space up until a certain point to prevent excess usage.
     private void Update() { if (Input.GetKeyDown(KeyCode.Space)) { if (iteration < 7) { iteration++; CreateRules(); } } }
     private void Awake() { CreateRules(); }
     public void CreateRules()
@@ -31,9 +33,9 @@ public class LSystem : MonoBehaviour {
         Dictionary<char, string> ruleset = new Dictionary<char, string>();
         axiom = characters[0].ToString(); current = axiom;
 
-        //Updates the Characters and Rules based on these values.
+        // Updates the Characters and Rules based on these specific ruleset.
         for (int i = 0; i < rules.Count; i++) { ruleset.Add(characters[i], rules[i]); }
-        //Loop through the current string and update its values based on the iteration value and the ruleset.
+        // Then loops through the current string and updates its values.
         for (int x = 0; x < iteration; x++)
         {
             next = new StringBuilder();
@@ -45,7 +47,7 @@ public class LSystem : MonoBehaviour {
             }
             current = next.ToString();
         }
-        //Resets the previous Trees values before re-starting the coroutine.
+        // Resets the previous Trees values before re-starting the coroutine.
         transform.localPosition = Vector3.zero; transform.localRotation = Quaternion.identity;
         foreach (Transform child in tree) Destroy(child.gameObject);
 
@@ -53,27 +55,23 @@ public class LSystem : MonoBehaviour {
         iterationText.text = "> D:\\Integer\\Iteration\\Value    : " + iteration + ".0f";
         StartCoroutine(CreateLines());
     }
-
     private IEnumerator CreateLines()
     {
         List<Vector3> positions = new List<Vector3>(); List<Quaternion> rotations = new List<Quaternion>();
         topPosition = 1; botPosition = 0;
-        drawing = true; if (animate) StartCoroutine(LerpCamera());
-        else
-        {
-            loading.SetActive(true);
-            yield return new WaitForSeconds(0);
-        }
-        //Loops through each string and draws the conditions based on each value.
+        drawing = true;
+        if (animate) StartCoroutine(LerpCamera());
+        else loading.SetActive(true);
+        // Loops through each string and draws the conditions based on each value.
         for (int i = 0; i < current.Length; i++)
         {
             switch (current[i])
             {
-                //If the line is an X, then move forward without creating anything.
+                // If the line is an X, then move forward without creating anything.
                 case 'X':
                     break;
                     
-                //Create a Line, and set it to the transform.position of the L-System.
+                // If its an F then create a Line and set it to the transform.position of the L-System.
                 case 'F':
                     bool leaf = false; LineRenderer lineRenderer; Color newColour = colours[0];
                     lineRenderer = Instantiate(line).GetComponent<LineRenderer>();
@@ -84,7 +82,7 @@ public class LSystem : MonoBehaviour {
                     
                     lineRenderer.SetPosition(1, transform.position);
 
-                    //Determines if this is the last line in the sequence, and adds some leaf attributes;
+                    // Determines if this is the last line in the sequence, and adds some leaf attributes to differentiate it.
                     if (i + 1 < current.Length)
                     {
                         if (current[i + 1] == ']') leaf = true;
@@ -101,7 +99,7 @@ public class LSystem : MonoBehaviour {
                     lineRenderer.material.color = newColour;
 
                     if (animate && i % speed == 0) yield return null;
-                    //Stores the value for the highest and lowest points.
+                    // Stores the value for the highest and lowest points.
                     if (topPosition < transform.position.y) topPosition = transform.position.y; if (botPosition > transform.position.y) botPosition = transform.position.y;
                     break;
 	                
@@ -114,12 +112,12 @@ public class LSystem : MonoBehaviour {
                     transform.Rotate(Vector3.back * angle * (1 + (angleVariance * Random.Range(-1.0f, 1.0f))));
                     break;
 
-                //Saves the position of that branch.
+                // Saves the position of that branch.
                 case '[':
                     positions.Add(transform.position); rotations.Add(transform.rotation);
                     break;
 
-                //Continues drawing from the previous saved position when that branch is finished.
+                // Continues drawing from the previous saved position when that branch is finished.
 				case ']':
                     Vector3 lastPosition = positions[positions.Count - 1];
                     positions.RemoveAt(positions.Count - 1);
@@ -134,7 +132,7 @@ public class LSystem : MonoBehaviour {
         if (!animate) StartCoroutine(LerpCamera());
         loading.SetActive(false);
     }
-    //Lerps the Cameras position based on the animation of the Tree.
+    // Lerps the Cameras position based on the animation of the Tree.
     IEnumerator LerpCamera()
     {
         Vector3 newPosition;

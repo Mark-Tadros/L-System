@@ -3753,7 +3753,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d4dc76d001dfe5245aee211479855cc0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stringText: {fileID: 1923265224}
+  middleText: {fileID: 1923265224}
   leftText:
   - {fileID: 605453315}
   - {fileID: 2109020451}
