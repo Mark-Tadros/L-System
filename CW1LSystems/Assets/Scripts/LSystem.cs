@@ -102,13 +102,13 @@ public class LSystem : MonoBehaviour {
                     // Stores the value for the highest and lowest points.
                     if (topPosition < transform.position.y) topPosition = transform.position.y; if (botPosition > transform.position.y) botPosition = transform.position.y;
                     break;
-	                
+
                 //Rotates the Line based on whether its calling a + or -.
-				case '+':
+                case '+':
                     transform.Rotate(Vector3.forward * angle * (1 + (angleVariance * Random.Range(-1.0f, 1.0f))));
                     break;
 
-				case '-':
+                case '-':
                     transform.Rotate(Vector3.back * angle * (1 + (angleVariance * Random.Range(-1.0f, 1.0f))));
                     break;
 
@@ -118,7 +118,7 @@ public class LSystem : MonoBehaviour {
                     break;
 
                 // Continues drawing from the previous saved position when that branch is finished.
-				case ']':
+                case ']':
                     Vector3 lastPosition = positions[positions.Count - 1];
                     positions.RemoveAt(positions.Count - 1);
                     Quaternion lastRotation = rotations[rotations.Count - 1];
